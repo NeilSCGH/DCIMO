@@ -1,0 +1,4 @@
+*.bat
+*.pyc
+commit.txt
+**/data_cleaned.csv
