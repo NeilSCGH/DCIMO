@@ -27,8 +27,20 @@ class program():
           self.destinationFolderPath = self.sourceFolderPath
         os.makedirs(self.destinationFolderPath, 0o777, exist_ok = True)
 
-        #print all files moved
-        self.printFileNames = self.tool.argExist("-print")
+        #print files moved
+        if self.tool.argHasValue("-print"): #exists AND has value
+            val = self.tool.argValue("-print")
+            self.printFileInterval=int(val) #print each x files moved
+            self.printFileNames=False
+        elif self.tool.argExist("-print"): #exists but no value
+            self.printFileInterval=-1
+            self.printFileNames = True #print each file moved or not
+        else: #doesnt exists
+            self.printFileInterval=1000
+            self.printFileNames = False #print nothing
+
+        #sort by day
+        self.day = self.tool.argExist("-day")
 
     def run(self):
         valid=0
@@ -40,9 +52,11 @@ class program():
             for filename in files:
                 try: 
                     self.move(root,filename)
+                    if ((self.printFileInterval !=-1) and ((valid % self.printFileInterval)==0)):
+                        print("{} files moved".format(valid))
                     valid += 1
                 except: 
-                    print("Error with file",previousPath)
+                    print("Error with file", root + "/" + filename)
                     invalid += 1
 
         print("{} file.s moved ({} error.s)".format(valid,invalid))
@@ -52,17 +66,20 @@ class program():
         #      YYYYMMDD_HHMMSS.ext
         year = file[:4]
         month = file[4:6]
+        day = file[6:8]
 
         sourcePath = rootPath + "/" + file
         destinationPath = self.destinationFolderPath
 
-        if "1950" <= year and year <= "2050" and "01" <= month and month <= "12":
+        if self.validDate(year,month,day):
             if self.printFileNames: print("OK",file)
             destinationPath += "/" + year + "/" + month + "/"
 
+            if self.day: destinationPath += "/" + day
+
         else:#invalid filename
             if self.printFileNames: print("NO",file)
-            destinationPath += "/Invalid/"
+            destinationPath += "/InvalidNames/"
 
         os.makedirs(destinationPath, 0o777, exist_ok = True)
 
@@ -71,6 +88,9 @@ class program():
         try: os.rename(sourcePath, destinationFilePath) #we move the file
         except: print("Error with file",sourcePath) #cannot move file, or file already exists
             
+    def validDate(self,year,month,day):
+        return ("1950" <= year and year <= "2050") and ("01" <= month and month <= "12") and ("01" <= day and day <= "31")
+
 
     def stop(self, msg = ""):
         if msg != "": print(msg)
