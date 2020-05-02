@@ -30,15 +30,16 @@ class program():
           self.printFileNames=False
 
         try:
-          os.makedirs(self.folderPathOutput,0o777)
-        except:1
+            os.makedirs(self.folderPathOutput,0o777)
+        except:1#folder already exists
 
     def run(self):
         for root, dirs, files in os.walk(self.folderPathSource):
             for filename in files:
                 try:
                     self.move(root,filename)
-                except:1
+                except:
+                    print("Unexpected error with file",previousPath)
     def move(self,rootPath,file):
         year=file[:4]
         month=file[4:6]
@@ -54,14 +55,14 @@ class program():
 
         try:
             os.makedirs(newFolderPath,0o777)
-        except:1
+        except:1#folder already exists
 
         newPath=newFolderPath + file
 
         try:
             os.rename(previousPath, newPath)
-        except:1
-
+        except:#cannot move file, or file already exists
+            print("Error with file",previousPath)
 
     def stop(self,msg=""):
         if msg!="": print(msg)
