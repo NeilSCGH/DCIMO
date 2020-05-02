@@ -39,20 +39,20 @@ class program():
 
         if "2000"<= year and year<="2030" and "01"<=month and month<="12":
             print("OK",file)
-            
             newFolderPath=self.folderPathOutput + "/" + year + "/" + month + "/"
-            try:
-                os.makedirs(newFolderPath,0o777)
-            except:1
-
-            newPath=newFolderPath + file
-
-            try:
-                os.rename(previousPath, newPath)
-            except:1
-        else:
-            #invalid filename
+        else:#invalid filename
             print("NO",file)
+            newFolderPath=self.folderPathOutput + "/Invalid/"
+
+        try:
+            os.makedirs(newFolderPath,0o777)
+        except:1
+
+        newPath=newFolderPath + file
+
+        try:
+            os.rename(previousPath, newPath)
+        except:1
 
 
     def stop(self,msg):
