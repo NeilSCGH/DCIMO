@@ -11,19 +11,19 @@ class program():
         if self.tool.argHasValue("-sf"):#the folder for source files
           val=self.tool.argValue("-sf")
           self.folderPathSource=val.replace("\\","/")
-          #print("folderPathSource",self.folderPathSource)
         else:
           self.stop("Error, -sf (source fold) is missing !")
 
-        if self.tool.argHasValue("-of"):#the folder for source files
+        if self.tool.argHasValue("-of"):#the folder for output files
           val=self.tool.argValue("-of")
           self.folderPathOutput=val.replace("\\","/")
-          try:
-            os.mkdir(self.folderPathOutput,0o777)
-          except:1
-          #print("folderPathOutput",self.folderPathOutput)
         else:
-          self.stop("Error, -of (output folder) is missing !")
+          self.folderPathOutput=self.folderPathSource
+          #self.stop("Error, -of (output folder) is missing !")
+
+        try:
+          os.mkdir(self.folderPathOutput,0o777)
+        except:1
 
     def run(self):
         for root, dirs, files in os.walk(self.folderPathSource):
