@@ -75,7 +75,7 @@ class program():
             if self.printFileNames: print("OK",file)
             destinationPath += "/" + year + "/" + month + "/"
 
-            if self.day: destinationPath += "/" + day
+            if self.day: destinationPath += day + "/"
 
         else:#invalid filename
             if self.printFileNames: print("NO",file)
