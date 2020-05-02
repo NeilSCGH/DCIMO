@@ -31,10 +31,21 @@ class program():
         self.printFileNames = self.tool.argExist("-print")
 
     def run(self):
+        valid=0
+        invalid=0
+
+        print("Working...")
+
         for root, dirs, files in os.walk(self.sourceFolderPath):
             for filename in files:
-                try: self.move(root,filename)
-                except: print("Unexpected error with file",previousPath)
+                try: 
+                    self.move(root,filename)
+                    valid += 1
+                except: 
+                    print("Error with file",previousPath)
+                    invalid += 1
+
+        print("{} file.s moved ({} error.s)".format(valid,invalid))
 
     def move(self,rootPath,file):
         #model 20200425_123551.jpg
