@@ -21,6 +21,11 @@ class program():
           self.folderPathOutput=self.folderPathSource
           #self.stop("Error, -of (output folder) is missing !")
 
+        if self.tool.argExist("-print"):#the folder for output files
+          self.printFileNames=True
+        else:
+          self.printFileNames=False
+
         try:
           os.makedirs(self.folderPathOutput,0o777)
         except:1
@@ -38,10 +43,10 @@ class program():
         previousPath=rootPath + "/" + file
 
         if "2000"<= year and year<="2030" and "01"<=month and month<="12":
-            print("OK",file)
+            if self.printFileNames: print("OK",file)
             newFolderPath=self.folderPathOutput + "/" + year + "/" + month + "/"
         else:#invalid filename
-            print("NO",file)
+            if self.printFileNames: print("NO",file)
             newFolderPath=self.folderPathOutput + "/Invalid/"
 
         try:
