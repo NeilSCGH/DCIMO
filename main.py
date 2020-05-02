@@ -8,14 +8,17 @@ class program():
         self.setup(args)
 
     def setup(self,args):
+        if self.tool.argExist("-h") or self.tool.argExist("-help"):#the folder for output files
+          self.help()
+
         if self.tool.argHasValue("-sf"):#the folder for source files
           val=self.tool.argValue("-sf")
           self.folderPathSource=val.replace("\\","/")
         else:
           self.stop("Error, -sf (source fold) is missing !")
 
-        if self.tool.argHasValue("-of"):#the folder for output files
-          val=self.tool.argValue("-of")
+        if self.tool.argHasValue("-df"):#the folder for output files
+          val=self.tool.argValue("-df")
           self.folderPathOutput=val.replace("\\","/")
         else:
           self.folderPathOutput=self.folderPathSource
@@ -60,8 +63,20 @@ class program():
         except:1
 
 
-    def stop(self,msg):
-        print(msg)
+    def stop(self,msg=""):
+        if msg!="": print(msg)
+        exit(0)
+
+    def help(self):
+        print("")
+        print("Usage: python main.py -sf sourceFolder [-df outputFolder]  [-print]")
+        print("")
+        print("Options:")
+        print("    -sf path        Path of the source folder")
+        print("    -df path        Path of the destination folder (Optional, by default it's the source folder)")
+        print("    -print          Print all files moved (Optional)")
+        print("")
+        print("")
         exit(0)
 
 
