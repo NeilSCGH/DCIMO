@@ -98,7 +98,7 @@ class program():
 
     def help(self):
         print("")
-        print("Usage: python main.py -sf sourceFolder [-df outputFolder]  [-print]  [-day]")
+        print("Usage: python dcimo.py -sf sourceFolder [-df outputFolder]  [-print]  [-day]")
         print("")
         print("Options:")
         print("    -sf path        Path of the source folder")
