@@ -28,9 +28,9 @@ class program():
     def run(self):
         for root, dirs, files in os.walk(self.folderPathSource):
             for filename in files:
-                #try:
-                self.move(root,filename)
-                #except:1
+                try:
+                    self.move(root,filename)
+                except:1
     def move(self,rootPath,file):
         year=file[:4]
         month=file[4:6]
@@ -50,7 +50,7 @@ class program():
             except:1
 
             newPath=newFolderPath + file
-            
+
             os.rename(previousPath, newPath)
         else:
             print("NO",file)
