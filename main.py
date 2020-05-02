@@ -22,7 +22,7 @@ class program():
           #self.stop("Error, -of (output folder) is missing !")
 
         try:
-          os.mkdir(self.folderPathOutput,0o777)
+          os.makedirs(self.folderPathOutput,0o777)
         except:1
 
     def run(self):
@@ -35,24 +35,23 @@ class program():
         year=file[:4]
         month=file[4:6]
 
+        previousPath=rootPath + "/" + file
+
         if "2000"<= year and year<="2030" and "01"<=month and month<="12":
             print("OK",file)
-            previousPath=rootPath + "/" + file
-
-            newFolderPath=self.folderPathOutput + "/" + year
+            
+            newFolderPath=self.folderPathOutput + "/" + year + "/" + month + "/"
             try:
-                os.mkdir(newFolderPath,0o777)
-            except:1
-
-            newFolderPath += "/" + month + "/" 
-            try:
-                os.mkdir(newFolderPath,0o777)
+                os.makedirs(newFolderPath,0o777)
             except:1
 
             newPath=newFolderPath + file
 
-            os.rename(previousPath, newPath)
+            try:
+                os.rename(previousPath, newPath)
+            except:1
         else:
+            #invalid filename
             print("NO",file)
 
 
