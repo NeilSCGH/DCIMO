@@ -5,68 +5,65 @@ from lib.tools import *
 class program():
     def __init__(self,args):
         self.tool = tools(args)
-        self.setup(args)
+        self.setup(args)#process the arguments
 
     def setup(self,args):
-        if self.tool.argExist("-h") or self.tool.argExist("-help"):#the folder for output files
+        #Help
+        if self.tool.argExist("-h") or self.tool.argExist("-help"):
           self.help()
 
-        if self.tool.argHasValue("-sf"):#the folder for source files
-          val=self.tool.argValue("-sf")
-          self.folderPathSource=val.replace("\\","/")
+        #the folder for source files
+        if self.tool.argHasValue("-sf"):
+          val = self.tool.argValue("-sf")
+          self.sourceFolderPath = val.replace("\\","/")
         else:
           self.stop("Error, -sf (source fold) is missing !")
 
-        if self.tool.argHasValue("-df"):#the folder for output files
-          val=self.tool.argValue("-df")
-          self.folderPathOutput=val.replace("\\","/")
+        #the folder for output files
+        if self.tool.argHasValue("-df"):
+          val = self.tool.argValue("-df")
+          self.destinationFolderPath = val.replace("\\","/")
         else:
-          self.folderPathOutput=self.folderPathSource
-          #self.stop("Error, -of (output folder) is missing !")
+          self.destinationFolderPath = self.sourceFolderPath
+        os.makedirs(self.destinationFolderPath, 0o777, exist_ok = True)
 
-        if self.tool.argExist("-print"):#the folder for output files
-          self.printFileNames=True
-        else:
-          self.printFileNames=False
-
-        try:
-            os.makedirs(self.folderPathOutput,0o777)
-        except:1#folder already exists
+        #print all files moved
+        self.printFileNames = self.tool.argExist("-print")
 
     def run(self):
-        for root, dirs, files in os.walk(self.folderPathSource):
+        for root, dirs, files in os.walk(self.sourceFolderPath):
             for filename in files:
-                try:
-                    self.move(root,filename)
-                except:
-                    print("Unexpected error with file",previousPath)
+                try: self.move(root,filename)
+                except: print("Unexpected error with file",previousPath)
+
     def move(self,rootPath,file):
-        year=file[:4]
-        month=file[4:6]
+        #model 20200425_123551.jpg
+        #      YYYYMMDD_HHMMSS.ext
+        year = file[:4]
+        month = file[4:6]
 
-        previousPath=rootPath + "/" + file
+        sourcePath = rootPath + "/" + file
+        destinationPath = self.destinationFolderPath
 
-        if "2000"<= year and year<="2030" and "01"<=month and month<="12":
+        if "1950" <= year and year <= "2050" and "01" <= month and month <= "12":
             if self.printFileNames: print("OK",file)
-            newFolderPath=self.folderPathOutput + "/" + year + "/" + month + "/"
+            destinationPath += "/" + year + "/" + month + "/"
+
         else:#invalid filename
             if self.printFileNames: print("NO",file)
-            newFolderPath=self.folderPathOutput + "/Invalid/"
+            destinationPath += "/Invalid/"
 
-        try:
-            os.makedirs(newFolderPath,0o777)
-        except:1#folder already exists
+        os.makedirs(destinationPath, 0o777, exist_ok = True)
 
-        newPath=newFolderPath + file
+        destinationFilePath = destinationPath + file
 
-        try:
-            os.rename(previousPath, newPath)
-        except:#cannot move file, or file already exists
-            print("Error with file",previousPath)
+        try: os.rename(sourcePath, destinationFilePath) #we move the file
+        except: print("Error with file",sourcePath) #cannot move file, or file already exists
+            
 
-    def stop(self,msg=""):
-        if msg!="": print(msg)
-        exit(0)
+    def stop(self, msg = ""):
+        if msg != "": print(msg)
+        exit(0)#stop the program
 
     def help(self):
         print("")
@@ -82,5 +79,5 @@ class program():
 
 
 if __name__ == '__main__':
-    prog=program(sys.argv)
+    prog = program(sys.argv)
     prog.run()
