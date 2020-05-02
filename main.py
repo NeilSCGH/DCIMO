@@ -17,7 +17,7 @@ class program():
           val = self.tool.argValue("-sf")
           self.sourceFolderPath = val.replace("\\","/")
         else:
-          self.stop("Error, -sf (source fold) is missing !")
+          self.stop("Error, -sf (source folder) is missing !")
 
         #the folder for output files
         if self.tool.argHasValue("-df"):
@@ -60,6 +60,7 @@ class program():
                     invalid += 1
 
         print("{} file.s moved ({} error.s)".format(valid,invalid))
+        if invalid !=0 : print("There was error, please retry the same command")
 
     def move(self,rootPath,file):
         #model 20200425_123551.jpg
@@ -91,14 +92,13 @@ class program():
     def validDate(self,year,month,day):
         return ("1950" <= year and year <= "2050") and ("01" <= month and month <= "12") and ("01" <= day and day <= "31")
 
-
     def stop(self, msg = ""):
         if msg != "": print(msg)
         exit(0)#stop the program
 
     def help(self):
         print("")
-        print("Usage: python main.py -sf sourceFolder [-df outputFolder]  [-print]")
+        print("Usage: python main.py -sf sourceFolder [-df outputFolder]  [-print]  [-day]")
         print("")
         print("Options:")
         print("    -sf path        Path of the source folder")
