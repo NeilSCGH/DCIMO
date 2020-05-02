@@ -1,7 +1,7 @@
 # DCIMOrganizer
-Usage: python main.py -sf sourceFolder [-df outputFolder]  [-print]
+This program will organize photos and videos according to the date in the filename. For example 20200425_123551.jpg will be moved in the folder 2020/04.
 
- 
+Usage: python main.py -sf sourceFolder [-df outputFolder]  [-print]
 
 Options:
 
