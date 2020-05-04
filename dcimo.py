@@ -87,7 +87,9 @@ class program():
         destinationFilePath = destinationPath + file
 
         try: os.rename(sourcePath, destinationFilePath) #we move the file
-        except: print("Error with file",sourcePath) #cannot move file, or file already exists
+        except: 
+        	print("Error with file",sourcePath) #cannot move file, or file already exists
+        	assert False
             
     def validDate(self,year,month,day):
         return ("1950" <= year and year <= "2050") and ("01" <= month and month <= "12") and ("01" <= day and day <= "31")
