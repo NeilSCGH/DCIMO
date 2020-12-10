@@ -42,22 +42,51 @@ class program():
         #sort by day
         self.day = self.tool.argExist("-day")
 
+        #ask for verification before moving files
+        #self.ask = not self.tool.argExist("-y") #TODO
+
+        #skip already scanned folders
+        self.scanAll = not self.tool.argExist("-fast")
+
     def run(self):
         valid=0
         invalid=0
 
         print("Working...")
-
-        for root, dirs, files in os.walk(self.sourceFolderPath):
-            for filename in files:
-                try: 
-                    self.move(root,filename)
+        for element in os.listdir(self.sourceFolderPath):
+            path=os.path.join(self.sourceFolderPath,element)
+            if os.path.isfile(path): #is a file
+                try: #move it
+                    self.move(self.sourceFolderPath, element)
                     if ((self.printFileInterval !=-1) and ((valid % self.printFileInterval)==0)):
                         print("{} files moved".format(valid))
                     valid += 1
                 except: 
-                    print("Error with file", root + "/" + filename)
+                    print("Error 1 with file", path)
                     invalid += 1
+            else:#if folder
+                scanThisFolder=False
+                if self.scanAll:
+                    scanThisFolder=True
+                else:
+                    if element.isnumeric():
+                        date=int(element)
+                        if 1900<=date and date<=2099:#valid date -> already organized
+                            print("Skipping folder", element)
+                    else:#not numeric
+                        scanThisFolder=True
+
+                if scanThisFolder:
+                    for root, dirs, files in os.walk(self.sourceFolderPath):
+                        for filename in files:
+                            try: #move it
+                                self.move(root,filename)
+                                if ((self.printFileInterval !=-1) and ((valid % self.printFileInterval)==0)):
+                                    print("{} files moved".format(valid))
+                                valid += 1
+                            except: 
+                                print("Error 2 with file", root + "/" + filename)
+                                invalid += 1                        
 
         print("{} file.s moved ({} error.s)".format(valid,invalid))
         if invalid !=0 : print("There was error, please retry the same command")
@@ -96,11 +125,13 @@ class program():
 
     def stop(self, msg = ""):
         if msg != "": print(msg)
+        self.help()
         exit(0)#stop the program
 
     def help(self):
         print("")
-        print("Usage: python dcimo.py -sf sourceFolder [-df outputFolder]  [-print]  [-day]")
+        print("Usage: python dcimo.py -sf sourceFolder [-df outputFolder]")
+        print("                       [-print] [-day] [-fast]")
         print("")
         print("Options:")
         print("    -sf path        Path of the source folder")
@@ -108,6 +139,7 @@ class program():
         print("    -print x        Print a counter each x files moved (Optional, by default set to 1000).")
         print("                    If no x is specified, print all file's names.")
         print("    -day            Separate files by day (Optional)")
+        print("    -fast           Skip already organized folders (Optional)")
         print("")
         print("")
         exit(0)
