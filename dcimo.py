@@ -61,7 +61,6 @@ class program():
                     if ((self.printFileInterval !=-1) and ((valid % self.printFileInterval)==0)):
                         print("{} files moved".format(valid))
                     valid += 1
-                    print("a",valid)
                 except: 
                     print("Error 1 with file", path)
                     invalid += 1
@@ -85,7 +84,6 @@ class program():
                                 if ((self.printFileInterval !=-1) and ((valid % self.printFileInterval)==0)):
                                     print("{} files moved".format(valid))
                                 valid += 1
-                                print("b",valid)
                             except: 
                                 print("Error 2 with file", root + "/" + filename)
                                 invalid += 1                        
