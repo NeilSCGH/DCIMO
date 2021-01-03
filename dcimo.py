@@ -1,6 +1,6 @@
-import sys
-import os
+import sys, os, json
 from lib.tools import *
+from pymediainfo import MediaInfo
 
 class program():
     def __init__(self,args):
@@ -51,6 +51,9 @@ class program():
         #skip already scanned folders
         self.scanAll = not self.tool.argExist("-fast")
 
+        #use exif data instead of filename
+        self.exif = self.tool.argExist("-exif")
+
     def run(self):
         valid=0
         invalid=0
@@ -96,19 +99,38 @@ class program():
 
         print("{} file.s moved ({} error.s)".format(valid,invalid))
         if invalid !=0 : print("There was error, please retry the same command")
+        
+    def getDate(self,file):
+        media_info = MediaInfo.parse(file, output="JSON")
+        data = json.loads(media_info)["media"]["track"][0]["File_Modified_Date_Local"]
+        return data
 
     def move(self,rootPath,file):
-        #model 20200425_123551.jpg
-        #      YYYYMMDD_HHMMSS.ext
-        year = file[:4]
-        month = file[4:6]
-        day = file[6:8]
+        try:
+            assert not self.exif
+
+            #model 20200425_123551.jpg
+            #      YYYYMMDD_HHMMSS.ext
+            year = file[:4]
+            month = file[4:6]
+            day = file[6:8]
+
+            assert self.validDate(year,month,day)
+        except:
+            #model 2020-12-07 16:36:47.729
+            #      YYYY-MM-DD HH:MM:SS.MS
+            data = self.getDate(rootPath+"/"+file)
+            year = data[:4]
+            month = data[5:7]
+            day = data[8:10]
+
+            #if yearExif == year and monthExif == month and dayExif == day:
 
         sourcePath = rootPath + "/" + file
         destinationPath = self.destinationFolderPath
 
         if self.validDate(year,month,day):
-            if self.printFileNames: print("OK",file)
+            if self.printFileNames: print("OK", file)
 
             if self.flat:
                 destinationPath += "/" + year + "-" + month + "-" + day + "/"
