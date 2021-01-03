@@ -39,6 +39,9 @@ class program():
             self.printFileInterval=1000
             self.printFileNames = False #print nothing
 
+        #flat : all in one folder
+        self.flat = self.tool.argExist("-flat")
+
         #sort by day
         self.day = self.tool.argExist("-day")
 
@@ -65,7 +68,6 @@ class program():
                     print("Error 1 with file", path)
                     invalid += 1
             else:#if folder
-                scanThisFolder=False
                 if self.scanAll:
                     scanThisFolder=True
                 else:
@@ -73,11 +75,15 @@ class program():
                         date=int(element)
                         if 1900<=date and date<=2099:#valid date -> already organized
                             print("Skipping folder", element)
+                            scanThisFolder=False
+                        else:
+                            scanThisFolder=True
                     else:#not numeric
                         scanThisFolder=True
 
                 if scanThisFolder:
-                    for root, dirs, files in os.walk(element):
+                    for root, dirs, files in os.walk(path):
+
                         for filename in files:
                             try: #move it
                                 self.move(root,filename)
@@ -103,9 +109,12 @@ class program():
 
         if self.validDate(year,month,day):
             if self.printFileNames: print("OK",file)
-            destinationPath += "/" + year + "/" + month + "/"
 
-            if self.day: destinationPath += day + "/"
+            if self.flat:
+                destinationPath += "/" + year + "-" + month + "-" + day + "/"
+            else:
+                destinationPath += "/" + year + "/" + month + "/"
+                if self.day: destinationPath += day + "/"
 
         else:#invalid filename
             if self.printFileNames: print("NO",file)
