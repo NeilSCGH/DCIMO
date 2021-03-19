@@ -140,7 +140,7 @@ class program():
 
         else:#invalid filename
             if self.printFileNames: print("NO",file)
-            destinationPath += "/InvalidNames/"
+            destinationPath += "/invalid/"
 
         os.makedirs(destinationPath, 0o777, exist_ok = True)
 
